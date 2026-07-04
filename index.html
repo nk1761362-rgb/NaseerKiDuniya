@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Muskan</title>
+    <style>
+        :root {
+            --pink: #ff65a3;
+            --light-pink: #ffe3ed;
+            --white: #ffffff;
+            --black: #111111;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--black);
+            color: var(--white);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Screen States */
+        .screen {
+            display: none;
+            position: relative;
+            width: 100vw;
+            min-height: 100vh;
+            z-index: 1;
+        }
+
+        .screen.active {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Login Screen Background Animation */
+        #login-screen {
+            background: linear-gradient(135deg, #111 0%, #221219 100%);
+            overflow: hidden;
+        }
+
+        .heart-bg {
+            position: absolute;
+            font-size: 2rem;
+            color: rgba(255, 101, 163, 0.15);
+            animation: floatUp 8s infinite linear;
+            z-index: 0;
+            bottom: -50px;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-105vh) rotate(360deg); opacity: 0; }
+        }
+
+        .login-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2.5rem;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 101, 163, 0.3);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            z-index: 2;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .login-card h2 {
+            color: var(--pink);
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            letter-spacing: 1px;
+        }
+
+        .login-card input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border-radius: 25px;
+            border: 2px solid #444;
+            background: rgba(0,0,0,0.4);
+            color: white;
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .login-card input:focus {
+            border-color: var(--pink);
+            box-shadow: 0 0 10px rgba(255, 101, 163, 0.5);
+        }
+
+        button.btn {
+            background: var(--pink);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 15px rgba(255, 101, 163, 0.4);
+        }
+
+        button.btn:hover {
+            background: #ff4085;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 101, 163, 0.6);
+        }
+
+        .error-msg {
+            color: #ff4a4a;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        /* Balloon Screen Setup */
+        #balloon-screen {
+            background: radial-gradient(circle, #201018 0%, #0d060a 100%);
+        }
+
+        .balloon-container {
+            position: relative;
+            width: 100%;
+            height: 70vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .balloon {
+            width: 100px;
+            height: 125px;
+            background: var(--pink);
+            border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+            position: absolute;
+            cursor: pointer;
+            animation: gentleSway 4s infinite ease-in-out alternate;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset -10px -10px 20px rgba(0,0,0,0.2), 0 10px 20px rgba(255,101,163,0.3);
+        }
+
+        .balloon::after {
+            content: "▲";
+            color: var(--pink);
+            font-size: 12px;
+            position: absolute;
+            bottom: -8px;
+            left: 44px;
+        }
+
+        .balloon-string {
+            width: 2px;
+            height: 100px;
+            background: rgba(255,255,255,0.4);
+            position: absolute;
+            bottom: -108px;
+            left: 49px;
+        }
+
+        .balloon-text {
+            color: white;
+            font-weight: bold;
+            font-size: 0.9rem;
+            pointer-events: none;
+        }
+
+        @keyframes gentleSway {
+            0% { transform: translateY(0) rotate(-5deg); }
+            100% { transform: translateY(-20px) rotate(5deg); }
+        }
+
+        .photo-display-area {
+            position: absolute;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            max-width: 90%;
+            width: 400px;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(8px);
+            animation: fadeIn 0.5s ease-out;
+            text-align: center;
+        }
+
+        .photo-display-area img {
+            width: 100%;
+            height: 450px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 3px solid var(--white);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+        }
+
+        .photo-caption {
+            margin-top: 1.2rem;
+            font-size: 1.1rem;
+            line-height: 1.5;
+            color: var(--light-pink);
+        }
+
+        .hint-text {
+            position: absolute;
+            top: 5%;
+            font-size: 1.2rem;
+            color: rgba(255,255,255,0.7);
+            letter-spacing: 1px;
+        }
+
+        /* Letter Screen */
+        #letter-screen {
+            background: #1a0d13;
+        }
+
+        .envelope {
+            width: 200px;
+            height: 140px;
+            background: #e04d86;
+            position: relative;
+            border-radius: 0 0 10px 10px;
+            cursor: pointer;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s;
+        }
+
+        .envelope:hover {
+            transform: scale(1.05);
+        }
+
+        .envelope-flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            border-left: 100px solid transparent;
+            border-right: 100px solid transparent;
+            border-top: 80px solid #ff65a3;
+            transform-origin: top;
+            z-index: 2;
+        }
+
+        .envelope-lbl {
+            z-index: 3;
+            background: var(--white);
+            color: var(--black);
+            padding: 0.4rem 1.2rem;
+            font-weight: bold;
+            border-radius: 20px;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .letter-content-wrapper {
+            display: none;
+            width: 90%;
+            max-width: 650px;
+            max-height: 75vh;
+            background: var(--white);
+            color: var(--black);
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            overflow-y: auto;
+            position: relative;
+            animation: scaleUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .letter-content-wrapper h2 {
+            color: var(--pink);
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-size: 1.8rem;
+        }
+
+        .letter-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            white-space: pre-line;
+            text-align: justify;
+        }
+
+        .next-btn-container {
+            margin-top: 2rem;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Rain Particle FX Configuration */
+        .particle {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            font-size: 1.8rem;
+            top: -50px;
+            animation: fallAnimation 2.5s linear forwards;
+        }
+
+        @keyframes fallAnimation {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(calc(100vh + 50px)) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Media and Video Layout Section */
+        #media-screen {
+            background: #0f0f14;
+            padding: 3rem 1rem;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        #media-screen.active {
+            display: flex;
+        }
+
+        .media-heading {
+            color: var(--pink);
+            margin-bottom: 2rem;
+            font-size: 2rem;
+            text-align: center;
+        }
+
+        .audio-container {
+            background: rgba(255,255,255,0.05);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 1px solid rgba(255,101,163,0.2);
+            width: 100%;
+            max-width: 500px;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .audio-container p {
+            margin-bottom: 1rem;
+            color: var(--light-pink);
+            font-weight: 500;
+        }
+
+        .audio-container audio {
+            width: 100%;
+        }
+
+        .video-feed {
+            display: flex;
+            flex-direction: column;
+            gap: 3rem;
+            width: 100%;
+            max-width: 450px;
+            align-items: center;
+            margin-bottom: 4rem;
+        }
+
+        .vertical-video-card {
+            width: 100%;
+            background: #000;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 2px solid rgba(255,255,255,0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+            aspect-ratio: 9 / 16;
+            position: relative;
+        }
+
+        .vertical-video-card video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* End Screen Section */
+        #end-screen {
+            background: linear-gradient(180deg, #180911 0%, #000000 100%);
+            padding: 4rem 1rem;
+            text-align: center;
+        }
+
+        .end-title {
+            font-size: 3.5rem;
+            color: var(--pink);
+            margin-bottom: 2rem;
+            letter-spacing: 2px;
+            text-shadow: 0 0 15px rgba(255,101,163,0.6);
+        }
+
+        .end-greeting {
+            max-width: 650px;
+            font-size: 1.15rem;
+            line-height: 1.8;
+            color: #f0e2e7;
+            text-align: justify;
+            margin-bottom: 4rem;
+            background: rgba(255,255,255,0.03);
+            padding: 2.5rem;
+            border-radius: 15px;
+            border-left: 4px solid var(--pink);
+        }
+
+        /* Global Animation Utilities */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes scaleUp { from { transform: scale(0.7); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--black); }
+        ::-webkit-scrollbar-thumb { background: var(--pink); border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+    <!-- BACKGROUND AUDIO PLAYER (Wish Song) -->
+    <audio id="wish-song" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- SECTION 1: LOGIN -->
+    <div id="login-screen" class="screen active">
+        <div class="login-card">
+            <h2>Enter Security Code</h2>
+            <input type="password" id="password-input" placeholder="Enter password to open...">
+            <button class="btn" onclick="checkPassword()">Unlock Surprise</button>
+            <div id="error-message" class="error-msg">Incorrect token of love. Try again! 💖</div>
+        </div>
+    </div>
+
+    <!-- SECTION 2: BALLOONS & PHOTOS -->
+    <div id="balloon-screen" class="screen">
+        <div class="hint-text">🎈 Tap the balloon to see your surprise!</div>
+        <div class="balloon-container" id="balloon-anchor">
+            <!-- Dynamic interactive balloon inserts here -->
+        </div>
+        <div class="photo-display-area" id="photo-box">
+            <img id="photo-element" src="" alt="Muskan's Photo">
+            <p id="caption-element" class="photo-caption"></p>
+        </div>
+        <div id="balloon-next-stage" style="display:none; margin-bottom: 3rem; z-index: 10;">
+            <button class="btn" onclick="goToLetterScreen()">Proceed to Next Surprise ✨</button>
+        </div>
+    </div>
+
+    <!-- SECTION 3: THE LOVE LETTER EXPLOSION -->
+    <div id="letter-screen" class="screen">
+        <div class="envelope" id="love-envelope" onclick="openLetter(event)">
+            <div class="envelope-flap"></div>
+            <div class="envelope-lbl">Open</div>
+        </div>
+
+        <div class="letter-content-wrapper" id="letter-body">
+            <h2>My Letter to You, Muskan ❤️</h2>
+            <div class="letter-text">
+                Dearest Muskan,
+
+                From the very moment you walked into my life, everything changed for the better. Your beautiful smile became my daily source of happiness, and your laughter is the sweet melody that echoes deep within my soul. Today, on your special day, I want to take a moment to remind you just how profoundly loved and appreciated you truly are. You are not just my partner; you are my best friend, my peaceful sanctuary, and my entire world wrapped up in one magnificent human being.
+
+                Every single day spent alongside you feels like a beautiful dream come true. Your thoughtfulness, warm heart, and radiant spirit never fail to inspire me to become a better version of myself. I cherish every sweet memory we have made, from the quiet, simple conversations to the joyous milestones we have crossed together. I find myself falling deeper in love with you with every passing second, captivated by your kindness and the effortless grace with which you treat everyone around you.
+
+                You bring a perfect sense of balance, clarity, and unyielding warmth to my life that I never knew I was missing. In your eyes, I see my bright future, filled with infinite dreams, unconditional love, and continuous happiness. Thank you for your endless patience, your unwavering trust, and for staying completely true to who you are. Thank you for choosing to share your beautiful journey with me.
+
+                No matter what paths lie ahead of us, I promise to always stand protectively by your side, holding your hand tight through every twist and turn. I promise to celebrate your highest triumphs, comfort you during your quietest vulnerabilities, and continuously fill your life with the love and joy you so deeply deserve. You hold the key to my heart forever.
+
+                Happy Birthday, my beautiful queen. May this wonderful year bring you all the endless joy, sparkling success, and perfect peace your heart desires. I love you beyond words, beyond boundaries, and across all time. ✨💖✨
+            </div>
+            <div class="next-btn-container" id="letter-next-container" style="visibility: hidden;">
+                <button class="btn" onclick="goToMediaScreen()">Next Surprise ➔</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 4: MUSIC & VIDEOS STREAM -->
+    <div id="media-screen" class="screen">
+        <h2 class="media-heading">Your Special Dedicated Track 🎵</h2>
+        
+        <div class="audio-container">
+            <p>Playing Muskan's Birthday Track</p>
+            <audio id="muskan-song" controls>
+                <source src="Muskan.mp3" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
+        </div>
+
+        <div class="video-feed">
+            <div class="vertical-video-card">
+                <video src="v1.mp4" controls loop muted autoplay></video>
+            </div>
+            <div class="vertical-video-card">
+                <video src="v2.mp4" controls loop muted></video>
+            </div>
+        </div>
+
+        <button class="btn" style="margin-bottom: 2rem;" onclick="goToEndScreen()">Final Surprise ➔</button>
+    </div>
+
+    <!-- SECTION 5: END PAGE -->
+    <div id="end-screen" class="screen">
+        <h1 class="end-title">End</h1>
+        
+        <div class="end-greeting">
+            Dear Muskan, as this little birthday journey comes to its closing page, I want you to carry these words deeply in your heart forever. You are the most extraordinary gift life has ever presented to me, and my love for you expands with every new sunrise. May your days ahead be brilliantly painted with boundless joy, excellent health, and the fulfillment of every grand dream you hold close. 
+
+            Never forget how precious you are, how stunning your spirit shines, and how deeply you are treasured by me every single second. Thank you for bringing your magical warmth into my universe and making everything so incredibly beautiful. Happy Birthday once again, my beautiful soulmate. 🌹✨❤️
+        </div>
+
+        <div class="vertical-video-card" style="max-width: 450px; margin-bottom: 3rem;">
+            <video id="final-video" src="v3.mp4" controls loop></video>
+        </div>
+
+        <div style="margin-bottom: 4rem;">
+            <button class="btn" onclick="goToLoginScreen()">Restart Journey 🔄</button>
+        </div>
+    </div>
+
+    <script>
+        const photoData = [
+            {
+                img: "1.jpeg",
+                caption: "Your laughter brightens my world. ✨ Every moment with you is a new feeling. ❤️ You are my life. 🥰"
+            },
+            {
+                img: "2.jpeg",
+                caption: "Your jokes make me fall in love in a new way every day. 💖 There is no one like you. 😘 Always stay close to my heart. 💞"
+            },
+            {
+                img: "3.jpeg",
+                caption: "Getting lost in your eyes takes me to a different world. 😍 Your every smile brings me peace. 🌹 I love you. ❤️"
+            },
+            {
+                img: "4.jpeg",
+                caption: "Your beauty and simplicity win my heart every moment. ✨ There is no one else like you who can bring me such peace. 👑❤️"
+            },
+            {
+                img: "5.jpeg",
+                caption: "Your thoughts and understanding always inspire me. 🤔❤️ Everything is beautiful when I'm with you. You are my whole life. 🌍✨"
+            }
+        ];
+
+        let currentBalloonIndex = 0;
+        const wishSong = document.getElementById('wish-song');
+
+        function createBackgroundHearts() {
+            const loginScreen = document.getElementById('login-screen');
+            for(let i=0; i<25; i++) {
+                let heart = document.createElement('div');
+                heart.className = 'heart-bg';
+                heart.innerHTML = '❤️';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDelay = Math.random() * 8 + 's';
+                heart.style.fontSize = (Math.random() * 1.5 + 1) + 'rem';
+                loginScreen.appendChild(heart);
+            }
+        }
+        createBackgroundHearts();
+
+        function checkPassword() {
+            const val = document.getElementById('password-input').value;
+            if(val === "happy birthday muskan@2002") {
+                document.getElementById('login-screen').classList.remove('active');
+                document.getElementById('balloon-screen').classList.add('active');
+                wishSong.play().catch(e => console.log("Audio play initiated after verification"));
+                spawnNextBalloon();
+            } else {
+                document.getElementById('error-message').style.display = 'block';
+            }
+        }
+
+        function spawnNextBalloon() {
+            if(currentBalloonIndex >= photoData.length) {
+                document.getElementById('balloon-next-stage').style.display = 'block';
+                return;
+            }
+
+            const anchor = document.getElementById('balloon-anchor');
+            anchor.innerHTML = ''; 
+
+            const balloon = document.createElement('div');
+            balloon.className = 'balloon';
+            
+            const string = document.createElement('div');
+            string.className = 'balloon-string';
+            balloon.appendChild(string);
+
+            const label = document.createElement('div');
+            label.className = 'balloon-text';
+            label.innerText = `Tap Me ${currentBalloonIndex + 1}`;
+            balloon.appendChild(label);
+
+            balloon.onclick = () => popBalloon(balloon);
+            anchor.appendChild(balloon);
+        }
+
+        function popBalloon(element) {
+            element.remove(); 
+            
+            const photoBox = document.getElementById('photo-box');
+            const pImage = document.getElementById('photo-element');
+            const pCaption = document.getElementById('caption-element');
+
+            pImage.src = photoData[currentBalloonIndex].img;
+            pCaption.innerHTML = photoData[currentBalloonIndex].caption;
+            
+            photoBox.style.display = 'flex';
+
+            setTimeout(() => {
+                photoBox.style.display = 'none';
+                currentBalloonIndex++;
+                spawnNextBalloon();
+            }, 5000); 
+        }
+
+        function goToLetterScreen() {
+            document.getElementById('balloon-screen').classList.remove('active');
+            document.getElementById('letter-screen').classList.add('active');
+        }
+
+        function openLetter(event) {
+            const envelope = document.getElementById('love-envelope');
+            envelope.style.display = 'none';
+            document.getElementById('letter-body').style.display = 'block';
+
+            // Function to generate a single rain element across full screen width
+            function spawnRainParticle() {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.innerHTML = ['❤️','💖','✨','🌸','🌹'][Math.floor(Math.random() * 5)];
+                
+                // Fullscreen absolute random horizontal alignment 
+                particle.style.left = Math.random() * 100 + 'vw';
+                
+                // Randomize scaling size and animation duration slightly for natural effect
+                const size = Math.random() * 1 + 1; // Between 1rem and 2rem
+                particle.style.fontSize = size + 'rem';
+                particle.style.animationDuration = (Math.random() * 1.5 + 2) + 's'; 
+                
+                document.body.appendChild(particle);
+                setTimeout(() => particle.remove(), 2500);
+            }
+
+            // Start the interval loops engine - Spawns 3 elements every 100ms
+            const rainInterval = setInterval(() => {
+                spawnRainParticle();
+                spawnRainParticle();
+                spawnRainParticle();
+            }, 100);
+
+            // Strict rule constraint: Terminate and clear rain loop after 5 seconds
+            setTimeout(() => {
+                clearInterval(rainInterval);
+            }, 5000);
+
+            // 10 Seconds Timeout Rule for Next Button Display Sequence
+            setTimeout(() => {
+                document.getElementById('letter-next-container').style.visibility = 'visible';
+            }, 10000);
+        }
+
+        function goToMediaScreen() {
+            wishSong.pause(); 
+            document.getElementById('letter-screen').classList.remove('active');
+            document.getElementById('media-screen').classList.add('active');
+            
+            const muskanSong = document.getElementById('muskan-song');
+            muskanSong.play().catch(e => console.log("Media audio autoplay rule handled securely"));
+        }
+
+        function goToEndScreen() {
+            document.getElementById('media-screen').classList.remove('active');
+            document.getElementById('end-screen').classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function goToLoginScreen() {
+            document.getElementById('muskan-song').pause();
+            document.getElementById('final-video').pause();
+            wishSong.pause();
+            wishSong.currentTime = 0;
+
+            currentBalloonIndex = 0;
+            document.getElementById('password-input').value = '';
+            document.getElementById('error-message').style.display = 'none';
+            document.getElementById('balloon-next-stage').style.display = 'none';
+            
+            document.getElementById('love-envelope').style.display = 'flex';
+            document.getElementById('letter-body').style.display = 'none';
+            document.getElementById('letter-next-container').style.visibility = 'hidden';
+
+            document.getElementById('end-screen').classList.remove('active');
+            document.getElementById('login-screen').classList.add('active');
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html> 
